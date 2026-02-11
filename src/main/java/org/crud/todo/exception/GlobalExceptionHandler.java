@@ -11,55 +11,42 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    /**
-     * Handles @Valid field validation errors
-     */
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<ApiResponse> handleValidationErrors(
+    public ResponseEntity<ApiResponse<?>> handleValidationErrors(
             MethodArgumentNotValidException ex) {
 
         String errorMessage = ex.getBindingResult()
                 .getFieldErrors()
-                .get(0)               // first error only (clean UX)
+                .get(0)
                 .getDefaultMessage();
 
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
-                .body(new ApiResponse(false, errorMessage));
+                .body(new ApiResponse<>(
+                        false,
+                        errorMessage,
+                        HttpStatus.BAD_REQUEST.value()
+                ));
     }
 
-    /**
-     * Handles missing or invalid JSON body
-     */
+
     @ExceptionHandler(HttpMessageNotReadableException.class)
-    public ResponseEntity<ApiResponse> handleMissingBody(
+    public ResponseEntity<ApiResponse<?>> handleMissingBody(
             HttpMessageNotReadableException ex) {
 
-        return ResponseEntity
-                .status(HttpStatus.BAD_REQUEST)
-                .body(new ApiResponse(false, "request body is required"));
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ApiResponse<>(false, "request body is required", HttpStatus.BAD_REQUEST.value()));
     }
 
-    /**
-     * Business logic errors
-     */
     @ExceptionHandler(IllegalStateException.class)
-    public ResponseEntity<ApiResponse> handleIllegalState(
+    public ResponseEntity<ApiResponse<?>> handleIllegalState(
             IllegalStateException ex) {
 
-        return ResponseEntity
-                .status(HttpStatus.BAD_REQUEST)
-                .body(new ApiResponse(false, ex.getMessage()));
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ApiResponse<>(false, ex.getMessage(),HttpStatus.BAD_REQUEST.value()));
     }
 
-    /**
-     * Fallback (safety net)
-     */
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity<ApiResponse> handleGeneric(Exception ex) {
 
-        return ResponseEntity
-                .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(new ApiResponse(false, "Something went wrong"));
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ApiResponse<?>> handleGeneric(Exception ex) {
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ApiResponse<>(false,"Something went wrong",HttpStatus.INTERNAL_SERVER_ERROR.value()));
     }
 }

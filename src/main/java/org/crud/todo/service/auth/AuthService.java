@@ -1,10 +1,18 @@
 package org.crud.todo.service.auth;
 
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.transaction.Transactional;
+import jakarta.validation.Valid;
+import org.crud.todo.dto.auth.LoginRequest;
 import org.crud.todo.dto.auth.RegisterRequest;
+import org.crud.todo.dto.common.ApiResponse;
+import org.crud.todo.helper.ServiceReturnHandler;
 import org.crud.todo.model.User;
 import org.crud.todo.repository.user.UserRepository;
 import org.crud.todo.security.PasswordService;
+import org.springframework.data.domain.Example;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -12,10 +20,12 @@ public class AuthService {
 
     private final UserRepository userRepository;
     private final PasswordService passwordService;
+    private final JwtService jwtService;
 
-    public AuthService(UserRepository userRepository, PasswordService passwordService) {
+    public AuthService(UserRepository userRepository, PasswordService passwordService, JwtService jwtService) {
         this.userRepository = userRepository;
         this.passwordService = passwordService;
+        this.jwtService = jwtService;
     }
 
     @Transactional
@@ -30,5 +40,54 @@ public class AuthService {
         user.setPassword(hashedPassword);
         user.setIs_active(true);
         userRepository.save(user);
+    }
+
+    public class LoginResult {
+        private String accessToken;
+        private String refreshToken;
+
+        public LoginResult(String accessToken, String refreshToken) {
+            this.accessToken = accessToken;
+            this.refreshToken = refreshToken;
+        }
+
+        public String getAccessToken() {
+            return accessToken;
+        }
+
+        public String getRefreshToken() {
+            return refreshToken;
+        }
+    }
+
+    public ServiceReturnHandler<LoginResult> login(LoginRequest request) {
+        try {
+
+
+        if (!userRepository.existsByUsername(request.getUsername())) {
+            return ServiceReturnHandler.returnError("User not exists", HttpStatus.BAD_REQUEST.value());
+        }
+
+        User whereCondition = new User();
+        whereCondition.setUsername(request.getUsername());
+        User user = userRepository.findOne(Example.of(whereCondition))
+                .orElse(null);
+
+        if (user == null) {
+            return ServiceReturnHandler.returnError("User not exists", HttpStatus.BAD_REQUEST.value());
+        }
+
+        String userHashedPassword = user.getPassword();
+        boolean isPasswordValid = passwordService.matchPassword(request.getPassword(), userHashedPassword);
+
+        if (!isPasswordValid) return ServiceReturnHandler.returnError("Invalid credentials", HttpStatus.UNAUTHORIZED.value());
+
+        String accessToken = jwtService.generateAccessToken(user);
+        String refreshToken = jwtService.generateRefreshToken(user);
+        LoginResult result = new LoginResult(accessToken, refreshToken);
+        return ServiceReturnHandler.returnSuccess("Login successful", 200, result);
+        } catch (Exception e) {
+            return ServiceReturnHandler.returnError("Something went wrong!!", HttpStatus.INTERNAL_SERVER_ERROR.value());
+        }
     }
 }

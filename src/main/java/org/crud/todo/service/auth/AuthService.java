@@ -7,6 +7,7 @@ import org.crud.todo.helper.ServiceReturnHandler;
 import org.crud.todo.model.User;
 import org.crud.todo.repository.user.UserRepository;
 import org.crud.todo.security.PasswordService;
+import org.crud.todo.security.service.CustomUserPrincipal;
 import org.crud.todo.security.service.JwtService;
 import org.springframework.data.domain.Example;
 import org.springframework.http.HttpStatus;
@@ -92,8 +93,8 @@ public class AuthService {
     }
 
     public ServiceReturnHandler verifyUser(Authentication userAuthentication) {
-        CustomUserPrincipal  principal = (CustomUserPrincipal) userAuthentication.getPrincipal();
+        CustomUserPrincipal principal = (CustomUserPrincipal) userAuthentication.getPrincipal();
         System.out.println(principal.getId());
-        return ServiceReturnHandler.returnSuccess("user", HttpStatus.OK.value());
+        return ServiceReturnHandler.returnSuccess("user", HttpStatus.OK.value(), principal);
     }
 }

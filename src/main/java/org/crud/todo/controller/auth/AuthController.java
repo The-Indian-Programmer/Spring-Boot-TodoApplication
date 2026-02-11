@@ -67,6 +67,6 @@ public class AuthController {
             return ResponseEntity.status(serviceReturnHandler.getStatusCode()).body(new ApiResponse<>(false, serviceReturnHandler.getMessage(), serviceReturnHandler.getStatusCode()));
         }
 
-        return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse<>(true, "Token is valid", 200));
+        return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse<>(true, "Token is valid", 200, serviceReturnHandler.getData() ));
     }
 }

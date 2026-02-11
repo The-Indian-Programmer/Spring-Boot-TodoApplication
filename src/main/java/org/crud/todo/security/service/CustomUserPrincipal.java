@@ -23,8 +23,6 @@ public class CustomUserPrincipal implements UserDetails {
         return id;
     }
 
-
-
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return Collections.emptyList(); // roles later
@@ -32,7 +30,7 @@ public class CustomUserPrincipal implements UserDetails {
 
     @Override
     public String getPassword() {
-        return password;
+        return "";
     }
 
     @Override

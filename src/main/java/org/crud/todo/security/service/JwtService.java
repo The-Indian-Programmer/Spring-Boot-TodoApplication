@@ -1,15 +1,11 @@
 package org.crud.todo.security.service;
 
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import org.crud.todo.model.User;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
-import java.nio.charset.StandardCharsets;
 import java.security.Key;
 import java.util.Date;
 
@@ -53,5 +49,27 @@ public class JwtService {
     public String extractUsername(String token) {
         return Jwts.parserBuilder().setSigningKey(getSigningKey()).build()
                 .parseClaimsJws(token).getBody().getSubject();
+    }
+
+    public  boolean isTokenValid(String token) {
+        return true;
+    }
+    public boolean validateJwtToken(String authToken) throws JwtException {
+        try {
+            Jwts.parserBuilder().setSigningKey(getSigningKey()).build().parse(authToken);
+            return true;
+        } catch (MalformedJwtException e) {
+            System.out.println("Invalid JWT token: {}" +  e.getMessage());
+        } catch (ExpiredJwtException e) {
+            System.out.println("JWT token is expired: {}" +  e.getMessage());
+
+        } catch (UnsupportedJwtException e) {
+            System.out.println("JWT token is unsupported: {}" +  e.getMessage());
+
+        } catch (IllegalArgumentException e) {
+            System.out.println("JWT claims string is empty: {}" +  e.getMessage());
+        }
+
+        return false;
     }
 }

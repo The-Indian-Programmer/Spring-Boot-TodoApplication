@@ -1,21 +1,21 @@
 package org.crud.todo.controller.auth;
 
 
-import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.crud.todo.dto.auth.LoginRequest;
 import org.crud.todo.dto.auth.RegisterRequest;
 import org.crud.todo.dto.common.ApiResponse;
 import org.crud.todo.helper.ServiceReturnHandler;
+import org.crud.todo.model.User;
 import org.crud.todo.service.auth.AuthService;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -55,5 +55,18 @@ public class AuthController {
                 .status(HttpStatus.OK)
                 .header(HttpHeaders.SET_COOKIE, cookie.toString())
                 .body(new ApiResponse<>(true, "Login successful", 200, returnData));
+    }
+
+
+    @GetMapping("/verify")
+    public  ResponseEntity<ApiResponse<?>> verifyUser(HttpServletRequest request) {
+        Authentication authentication =
+                SecurityContextHolder.getContext().getAuthentication();
+        ServiceReturnHandler serviceReturnHandler = authService.verifyUser(authentication);
+        if (!serviceReturnHandler.isStatus()) {
+            return ResponseEntity.status(serviceReturnHandler.getStatusCode()).body(new ApiResponse<>(false, serviceReturnHandler.getMessage(), serviceReturnHandler.getStatusCode()));
+        }
+
+        return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse<>(true, "Token is valid", 200));
     }
 }

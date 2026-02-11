@@ -8,15 +8,13 @@ import org.crud.todo.model.User;
 import org.crud.todo.repository.user.UserRepository;
 import org.crud.todo.security.PasswordService;
 import org.crud.todo.security.service.JwtService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.data.domain.Example;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestHeader;
 
 @Service
 public class AuthService {
@@ -57,7 +55,6 @@ public class AuthService {
         public String getAccessToken() {
             return accessToken;
         }
-
         public String getRefreshToken() {
             return refreshToken;
         }
@@ -65,8 +62,6 @@ public class AuthService {
 
     public ServiceReturnHandler<LoginResult> login(LoginRequest request) {
         try {
-
-
         if (!userRepository.existsByUsername(request.getUsername())) {
             return ServiceReturnHandler.returnError("User not exists", HttpStatus.BAD_REQUEST.value());
         }
@@ -94,5 +89,11 @@ public class AuthService {
         } catch (Exception e) {
             return ServiceReturnHandler.returnError("Something went wrong!!", HttpStatus.INTERNAL_SERVER_ERROR.value());
         }
+    }
+
+    public ServiceReturnHandler verifyUser(Authentication userAuthentication) {
+        CustomUserPrincipal  principal = (CustomUserPrincipal) userAuthentication.getPrincipal();
+        System.out.println(principal.getId());
+        return ServiceReturnHandler.returnSuccess("user", HttpStatus.OK.value());
     }
 }

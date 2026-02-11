@@ -19,7 +19,6 @@ public class DatabaseStartupLogger implements ApplicationRunner {
 
     @Override
     public void run(ApplicationArguments args) {
-        System.out.println("Application started with database connection:");
         try (Connection connection = dataSource.getConnection()) {
             System.out.println("Database connected successfully");
             System.out.println("Database URL: " + connection.getMetaData().getURL());

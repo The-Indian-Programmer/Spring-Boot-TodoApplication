@@ -11,8 +11,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-@RestController
-@RequestMapping("/api/tasks")
+//@RestController
+//@RequestMapping("/api/tasks")
 public class TasksController {
 
     private final TasksService tasksService;
@@ -23,7 +23,6 @@ public class TasksController {
 
     @PostMapping("")
     public ResponseEntity<ApiResponse<?>> create(@Valid @RequestBody CreateTaskRequest createTaskRequest) {
-        System.out.println("Controllere");
         ServiceReturnHandler returnHandler = tasksService.createTask(createTaskRequest);
         return ResponseEntity.status(returnHandler.getStatusCode()).body(new ApiResponse<>(returnHandler.isStatus(), returnHandler.getMessage(), returnHandler.getStatusCode(), returnHandler));
     }

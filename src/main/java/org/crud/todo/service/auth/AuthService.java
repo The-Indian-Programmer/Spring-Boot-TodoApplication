@@ -1,18 +1,21 @@
 package org.crud.todo.service.auth;
 
-import jakarta.servlet.http.Cookie;
-import jakarta.servlet.http.HttpServletResponse;
 import jakarta.transaction.Transactional;
-import jakarta.validation.Valid;
 import org.crud.todo.dto.auth.LoginRequest;
 import org.crud.todo.dto.auth.RegisterRequest;
-import org.crud.todo.dto.common.ApiResponse;
 import org.crud.todo.helper.ServiceReturnHandler;
 import org.crud.todo.model.User;
 import org.crud.todo.repository.user.UserRepository;
 import org.crud.todo.security.PasswordService;
+import org.crud.todo.security.service.JwtService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.data.domain.Example;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -84,6 +87,8 @@ public class AuthService {
 
         String accessToken = jwtService.generateAccessToken(user);
         String refreshToken = jwtService.generateRefreshToken(user);
+
+
         LoginResult result = new LoginResult(accessToken, refreshToken);
         return ServiceReturnHandler.returnSuccess("Login successful", 200, result);
         } catch (Exception e) {

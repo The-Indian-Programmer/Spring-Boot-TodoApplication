@@ -2,10 +2,10 @@ package org.crud.todo.helper;
 
 public class ServiceReturnHandler<T> {
 
-    private boolean status;
-    private String message;
-    private int statusCode;
-    private T data;
+    private final boolean status;
+    private final String message;
+    private final int statusCode;
+    private final T data;
 
     public ServiceReturnHandler(boolean status, String message, int statusCode, T data) {
         this.status = status;

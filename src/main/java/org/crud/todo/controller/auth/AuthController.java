@@ -37,7 +37,7 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<ApiResponse<?>> login(@Valid @RequestBody LoginRequest request, HttpServletResponse response) {
+    public ResponseEntity<ApiResponse<?>> login(@Valid @RequestBody LoginRequest request) {
         ServiceReturnHandler<AuthService.LoginResult> result = authService.login(request);
         if (!result.isStatus()) return ResponseEntity.status(result.getStatusCode()).body(new ApiResponse<>(false, result.getMessage(), result.getStatusCode()));
 

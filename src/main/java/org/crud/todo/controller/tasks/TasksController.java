@@ -30,7 +30,6 @@ public class TasksController {
         return ResponseEntity.status(returnHandler.getStatusCode()).body(new ApiResponse<>(returnHandler.isStatus(), returnHandler.getMessage(), returnHandler.getStatusCode(), returnHandler.getData()));
     }
 
-
     @GetMapping("")
     public ResponseEntity<ApiResponse<?>> getTaskList(@Valid @ModelAttribute TaskListRequest taskListRequest) {
         Authentication authenticatedUser = SecurityContextHolder.getContext().getAuthentication();
@@ -38,15 +37,12 @@ public class TasksController {
         return ResponseEntity.status(returnHandler.getStatusCode()).body(new ApiResponse<>(returnHandler.isStatus(), returnHandler.getMessage(), returnHandler.getStatusCode(), returnHandler.getData()));
     }
 
-
-
     @GetMapping("{id}")
     public ResponseEntity<ApiResponse<?>> getTask(@PathVariable Long id) {
         Authentication authenticatedUser = SecurityContextHolder.getContext().getAuthentication();
         ServiceReturnHandler returnHandler = tasksService.getTask(id, authenticatedUser);
         return ResponseEntity.status(returnHandler.getStatusCode()).body(new ApiResponse<>(returnHandler.isStatus(), returnHandler.getMessage(), returnHandler.getStatusCode(), returnHandler.getData()));
     }
-
 
     @PutMapping("{id}")
     public ResponseEntity<ApiResponse<?>> updateTask(@PathVariable @Min(1) Long id, @Valid @RequestBody UpdateTaskRequest updateTaskRequest) {
@@ -62,15 +58,11 @@ public class TasksController {
         return ResponseEntity.status(returnHandler.getStatusCode()).body(new ApiResponse<>(returnHandler.isStatus(), returnHandler.getMessage(), returnHandler.getStatusCode(), returnHandler.getData()));
     }
 
-
-
     @DeleteMapping("{id}")
     public ResponseEntity<ApiResponse<?>> deleteTask(@PathVariable @Min(1) Long id) {
         Authentication authenticatedUser = SecurityContextHolder.getContext().getAuthentication();
         ServiceReturnHandler returnHandler = tasksService.deleteTask(id, authenticatedUser);
         return ResponseEntity.status(returnHandler.getStatusCode()).body(new ApiResponse<>(returnHandler.isStatus(), returnHandler.getMessage(), returnHandler.getStatusCode(), returnHandler.getData()));
     }
-
-
 
 }

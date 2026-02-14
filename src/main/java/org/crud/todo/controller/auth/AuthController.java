@@ -7,7 +7,6 @@ import org.crud.todo.dto.auth.LoginRequest;
 import org.crud.todo.dto.auth.RegisterRequest;
 import org.crud.todo.dto.common.ApiResponse;
 import org.crud.todo.helper.ServiceReturnHandler;
-import org.crud.todo.model.User;
 import org.crud.todo.service.auth.AuthService;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -15,7 +14,11 @@ import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -67,6 +70,6 @@ public class AuthController {
             return ResponseEntity.status(serviceReturnHandler.getStatusCode()).body(new ApiResponse<>(false, serviceReturnHandler.getMessage(), serviceReturnHandler.getStatusCode()));
         }
 
-        return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse<>(true, "Token is valid", 200, serviceReturnHandler.getData() ));
+        return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse<>(true, "User Authorrized", 200, serviceReturnHandler.getData() ));
     }
 }

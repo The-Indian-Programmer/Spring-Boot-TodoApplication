@@ -18,6 +18,10 @@ public class Tasks {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+
+    @Column(name = "userId", nullable = false)
+    private Long userId;
+
     @Column(name = "title", nullable = false)
     private String title;
 
@@ -52,6 +56,9 @@ public class Tasks {
         this.updatedAt = LocalDateTime.now();
     }
 
+    public Long getUserId() {
+        return userId;
+    }
 
     public Long getId() {
         return id;
@@ -63,6 +70,10 @@ public class Tasks {
 
     public String getTitle() {
         return title;
+    }
+
+    public void setUserId(Long userId) {
+        this.userId = userId;
     }
 
     public void setTitle(String title) {

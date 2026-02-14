@@ -1,5 +1,6 @@
 package org.crud.todo.dto.tasks;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -25,6 +26,7 @@ public class CreateTaskRequest {
 
     @NotNull(message = "Due date is required")
     @Future(message = "Due date must be in the future")
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     private  LocalDateTime dueDate;
 

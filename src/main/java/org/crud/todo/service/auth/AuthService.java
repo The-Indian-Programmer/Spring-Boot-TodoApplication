@@ -17,6 +17,9 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestHeader;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @Service
 public class AuthService {
 
@@ -94,7 +97,9 @@ public class AuthService {
 
     public ServiceReturnHandler verifyUser(Authentication userAuthentication) {
         CustomUserPrincipal principal = (CustomUserPrincipal) userAuthentication.getPrincipal();
-        System.out.println(principal.getId());
-        return ServiceReturnHandler.returnSuccess("user", HttpStatus.OK.value(), principal);
+        Map<String, Object> userData = new HashMap<>();
+        userData.put("id", principal.getId());
+        userData.put("username", principal.getUsername());
+        return ServiceReturnHandler.returnSuccess("user", HttpStatus.OK.value(), userData);
     }
 }
